@@ -2,5 +2,5 @@ target/
 *.log
 .idea/
 *.iml
-*.vscode/
+.vscode/
 application-local.yml
