@@ -8,7 +8,6 @@ import com.yuan.exam.entity.User;
 import com.yuan.exam.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +22,15 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
+
+    public AuthController(UserRepository userRepository, JwtUtils jwtUtils) {
+        this.userRepository = userRepository;
+        this.jwtUtils = jwtUtils;
+    }
 
     /**
      * 使用者登入

@@ -3,7 +3,6 @@ package com.yuan.exam.config;
 import com.yuan.exam.entity.Role;
 import com.yuan.exam.entity.User;
 import com.yuan.exam.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -13,10 +12,13 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
+
+    public DataInitializer(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public void run(String... args) {
