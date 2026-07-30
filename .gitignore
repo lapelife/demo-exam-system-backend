@@ -4,3 +4,11 @@ target/
 *.iml
 .vscode/
 application-local.yml
+
+# Eclipse
+.classpath
+.project
+.factorypath
+.settings/
+.metadata/
+.bin/
