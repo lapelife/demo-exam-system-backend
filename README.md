@@ -11,6 +11,7 @@
 
 ## 核心能力
 - 角色：ADMIN / TEACHER / STUDENT
+- **用户管理（仅 ADMIN）**：新增教师/学生、编辑、禁用、重置密码、删除
 - 考试与题目 CRUD；删除考试级联清理作答/快照/题目
 - 题库管理 + 组卷（复制到考试）
 - 学生作答：时间窗、剩余时长、草稿自动保存、超时自动交卷
@@ -18,10 +19,19 @@
 - 题目列表按角色投影（学生看不到答案）
 - 教师：全员成绩、统计、试卷预览
 
+## 角色权限（固定，不做动态权限矩阵）
+| 能力 | ADMIN | TEACHER | STUDENT |
+|---|---|---|---|
+| 用户管理 | 是 | 否 | 否 |
+| 考试/题库/成绩统计 | 是 | 是 | 否 |
+| 作答 / 我的成绩 | 否 | 否 | 是 |
+
 ## 主要接口
 | 方法 | 路径 | 权限 |
 |---|---|---|
 | POST | /api/auth/login | 公开 |
+| CRUD | /api/users | ADMIN |
+| POST | /api/users/{id}/reset-password | ADMIN |
 | GET/POST/PUT/DELETE | /api/exams... | 读登录；写 ADMIN/TEACHER |
 | GET | /api/exams/{id}/preview | ADMIN/TEACHER |
 | POST | /api/exams/{id}/assemble | ADMIN/TEACHER |

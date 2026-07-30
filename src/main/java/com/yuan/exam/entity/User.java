@@ -19,29 +19,26 @@ import java.time.LocalDateTime;
 @Entity
 public class User {
 
-    /** 主键 ID */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 用户名称（唯一） */
     @Column(nullable = false, unique = true)
     private String username;
 
-    /** 密码 */
     private String password;
 
-    /** 角色 */
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    /** 暱称（可空） */
     private String nickname;
 
-    /** 电子邮件（可空） */
     private String email;
 
-    /** 建立时间 */
+    /** 是否启用（禁用后不可登录） */
+    @Column(nullable = false)
+    private Boolean enabled = true;
+
     @CreationTimestamp
     private LocalDateTime createTime;
 }

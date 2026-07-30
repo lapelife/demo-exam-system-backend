@@ -53,6 +53,9 @@ public class AuthController {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return Result.error(401, "密码错误");
         }
+        if (Boolean.FALSE.equals(user.getEnabled())) {
+            return Result.error(403, "账号已禁用");
+        }
 
         // 产生 JWT Token
         String token = jwtUtils.generateToken(user.getUsername(), user.getRole().name());
@@ -90,6 +93,7 @@ public class AuthController {
         info.put("role", user.getRole().name());
         info.put("nickname", user.getNickname());
         info.put("email", user.getEmail());
+        info.put("enabled", user.getEnabled() == null || user.getEnabled());
         return Result.success(info);
     }
 }

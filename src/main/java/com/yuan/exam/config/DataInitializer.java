@@ -50,6 +50,7 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
         initUsers();
         upgradePlaintextDemoPasswords();
+        fillEnabledDefault();
         initSampleExam();
         initBankQuestions();
     }
@@ -89,6 +90,16 @@ public class DataInitializer implements CommandLineRunner {
 
     private boolean isBcryptHash(String password) {
         return password.startsWith("$2a$") || password.startsWith("$2b$") || password.startsWith("$2y$");
+    }
+
+    /** 兼容旧库：enabled 为空时补 true */
+    private void fillEnabledDefault() {
+        for (User user : userRepository.findAll()) {
+            if (user.getEnabled() == null) {
+                user.setEnabled(true);
+                userRepository.save(user);
+            }
+        }
     }
 
     /**
@@ -167,6 +178,7 @@ public class DataInitializer implements CommandLineRunner {
         user.setPassword(passwordEncoder.encode(rawPassword));
         user.setRole(role);
         user.setNickname(nickname);
+        user.setEnabled(true);
         return user;
     }
 

@@ -143,9 +143,18 @@ public class ScoreService {
                 })
                 .toList();
 
-        int examMaxScore = snapshots.isEmpty()
-                ? (exam.getTotalScore() == null ? 0 : exam.getTotalScore())
-                : snapshots.stream().mapToInt(s -> s.getScore() == null ? 0 : s.getScore()).sum();
+        int examMaxScore;
+        if (!snapshots.isEmpty()) {
+            examMaxScore = snapshots.stream()
+                    .mapToInt(s -> s.getScore() == null ? 0 : s.getScore())
+                    .sum();
+        } else if (!details.isEmpty()) {
+            examMaxScore = details.stream()
+                    .mapToInt(d -> d.getMaxScore() == null ? 0 : d.getMaxScore())
+                    .sum();
+        } else {
+            examMaxScore = exam.getTotalScore() == null ? 0 : exam.getTotalScore();
+        }
 
         ScoreVo vo = new ScoreVo();
         vo.setExamRecordId(record.getId());
@@ -170,6 +179,7 @@ public class ScoreService {
         vo.setStartTime(r.getStartTime());
         vo.setSubmitTime(r.getSubmitTime());
         vo.setTotalScore(r.getTotalScore());
+        vo.setExamMaxScore(r.getExam().getTotalScore());
         vo.setStatus(r.getStatus());
         return vo;
     }

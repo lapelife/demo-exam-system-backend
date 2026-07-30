@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 学生作答接口（仅 STUDENT）
+ * 学生作答接口（学生 + 管理员验考）
  */
 @RestController
 @RequestMapping("/api/take")
-@PreAuthorize("hasRole('STUDENT')")
+@PreAuthorize("hasAnyRole('STUDENT','ADMIN')")
 public class ExamTakingController {
 
     private final ExamTakingService examTakingService;
