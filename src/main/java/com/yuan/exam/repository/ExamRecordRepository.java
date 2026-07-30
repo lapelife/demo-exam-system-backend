@@ -6,17 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /**
- * 考試作答記錄 Repository
+ * 考试作答记录 Repository
  */
 public interface ExamRecordRepository extends JpaRepository<ExamRecord, Long> {
 
     /**
-     * 依學生 ID 查詢所有作答記錄
+     * 依学生 ID 查询所有作答记录
      */
     List<ExamRecord> findByUserIdOrderByStartTimeDesc(Long userId);
 
     /**
-     * 依考試 ID 與學生 ID 查詢作答記錄（判斷是否已開始/已提交）
+     * 依考试 ID 与学生 ID 查询作答记录（判断是否已开始/已提交）
      */
     List<ExamRecord> findByExamIdAndUserId(Long examId, Long userId);
 }

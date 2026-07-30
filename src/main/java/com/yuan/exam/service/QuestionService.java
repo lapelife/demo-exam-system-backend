@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 題目管理 Service：負責題目的 CRUD（依考試 ID）
+ * 题目管理 Service：负责题目的 CRUD（依考试 ID）
  */
 @Service
 public class QuestionService {
@@ -26,11 +26,11 @@ public class QuestionService {
     }
 
     /**
-     * 列出某考試的所有題目
+     * 列出某考试的所有题目
      */
     public Result<List<QuestionVo>> listByExam(Long examId) {
         if (!examRepository.existsById(examId)) {
-            return Result.error(404, "考試不存在");
+            return Result.error(404, "考试不存在");
         }
         List<QuestionVo> list = questionRepository.findByExamId(examId).stream()
                 .map(this::toVo)
@@ -39,11 +39,11 @@ public class QuestionService {
     }
 
     /**
-     * 新增題目
+     * 新增题目
      */
     public Result<QuestionVo> create(Long examId, QuestionVo vo) {
         if (!examRepository.existsById(examId)) {
-            return Result.error(404, "考試不存在");
+            return Result.error(404, "考试不存在");
         }
         Question q = new Question();
         q.setExamId(examId);
@@ -57,12 +57,12 @@ public class QuestionService {
     }
 
     /**
-     * 更新題目
+     * 更新题目
      */
     public Result<QuestionVo> update(Long questionId, QuestionVo vo) {
         Optional<Question> opt = questionRepository.findById(questionId);
         if (opt.isEmpty()) {
-            return Result.error(404, "題目不存在");
+            return Result.error(404, "题目不存在");
         }
         Question q = opt.get();
         q.setType(vo.getType());
@@ -75,11 +75,11 @@ public class QuestionService {
     }
 
     /**
-     * 刪除題目
+     * 删除题目
      */
     public Result<Void> delete(Long questionId) {
         if (!questionRepository.existsById(questionId)) {
-            return Result.error(404, "題目不存在");
+            return Result.error(404, "题目不存在");
         }
         questionRepository.deleteById(questionId);
         return Result.success();

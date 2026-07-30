@@ -1,56 +1,56 @@
-# 線上考試系統 - 後端
+# 在线考试系统 - 后端
 
-> 個人作品展示專案
+> 个人作品展示项目
 
-## 技術棧
+## 技术栈
 - Spring Boot 4.0
 - Spring Data JPA
 - MySQL 8.0
-- Spring Security + JWT（方法級角色授權）
+- Spring Security + JWT（方法级角色授权）
 - Lombok
 
 ## 已完成
-- [x] 後端骨架搭建
-- [x] 統一返回格式 Result<T>
-- [x] 全局異常處理
-- [x] JPA 實體設計（User / Exam / Question / ExamRecord / AnswerRecord）
-- [x] 健康檢查接口
-- [x] 用戶登入認證（JWT）
-- [x] 考試管理 CRUD（限 ADMIN/TEACHER）
-- [x] 題目管理 CRUD（限 ADMIN/TEACHER）
-- [x] 答題模組（開始作答 / 提交）
-- [x] 自動判分（單選/判斷全對給分；多選集合比對，全對才給分）
-- [x] 成績查詢（我的成績列表 + 單次明細）
-- [x] 角色權限控制（@PreAuthorize + 401/403 JSON 回應）
-- [x] 示範資料初始化（admin/teacher/student + Java 基礎測驗 6 題）
+- [x] 后端骨架搭建
+- [x] 统一返回格式 Result<T>
+- [x] 全局异常处理
+- [x] JPA 实体设计（User / Exam / Question / ExamRecord / AnswerRecord）
+- [x] 健康检查接口
+- [x] 用户登录认证（JWT）
+- [x] 考试管理 CRUD（限 ADMIN/TEACHER）
+- [x] 题目管理 CRUD（限 ADMIN/TEACHER）
+- [x] 答题模块（开始作答 / 提交）
+- [x] 自动判分（单选/判断全对给分；多选集合比对，全对才给分）
+- [x] 成绩查询（我的成绩列表 + 单次明细）
+- [x] 角色权限控制（@PreAuthorize + 401/403 JSON 响应）
+- [x] 示范数据初始化（admin/teacher/student + Java 基础测验 6 题）
 
-## 接口一覽
-| 方法 | 路徑 | 說明 | 權限 |
+## 接口一览
+| 方法 | 路径 | 说明 | 权限 |
 |---|---|---|---|
-| POST | /api/auth/login | 登入 | 公開 |
-| GET  | /api/auth/info | 當前使用者資訊 | 登入 |
-| GET  | /api/exams | 考試列表 | 登入 |
-| GET  | /api/exams/{id} | 單一考試 | 登入 |
-| POST | /api/exams | 新增考試 | ADMIN/TEACHER |
-| PUT  | /api/exams/{id} | 更新考試 | ADMIN/TEACHER |
-| DELETE | /api/exams/{id} | 刪除考試 | ADMIN/TEACHER |
-| GET  | /api/exams/{examId}/questions | 題目列表 | 登入 |
-| POST | /api/exams/{examId}/questions | 新增題目 | ADMIN/TEACHER |
-| PUT  | /api/exams/{examId}/questions/{qid} | 更新題目 | ADMIN/TEACHER |
-| DELETE | /api/exams/{examId}/questions/{qid} | 刪除題目 | ADMIN/TEACHER |
-| POST | /api/take/start/{examId} | 開始作答 | 登入 |
-| POST | /api/take/submit | 提交並判分 | 登入 |
-| GET  | /api/scores | 我的成績 | 登入 |
-| GET  | /api/scores/{examRecordId} | 成績明細 | 登入 |
+| POST | /api/auth/login | 登录 | 公开 |
+| GET  | /api/auth/info | 当前用户信息 | 登录 |
+| GET  | /api/exams | 考试列表 | 登录 |
+| GET  | /api/exams/{id} | 单一考试 | 登录 |
+| POST | /api/exams | 新增考试 | ADMIN/TEACHER |
+| PUT  | /api/exams/{id} | 更新考试 | ADMIN/TEACHER |
+| DELETE | /api/exams/{id} | 删除考试 | ADMIN/TEACHER |
+| GET  | /api/exams/{examId}/questions | 题目列表 | 登录 |
+| POST | /api/exams/{examId}/questions | 新增题目 | ADMIN/TEACHER |
+| PUT  | /api/exams/{examId}/questions/{qid} | 更新题目 | ADMIN/TEACHER |
+| DELETE | /api/exams/{examId}/questions/{qid} | 删除题目 | ADMIN/TEACHER |
+| POST | /api/take/start/{examId} | 开始作答 | 登录 |
+| POST | /api/take/submit | 提交并判分 | 登录 |
+| GET  | /api/scores | 我的成绩 | 登录 |
+| GET  | /api/scores/{examRecordId} | 成绩明细 | 登录 |
 
-## 運行
-1. 建庫：`CREATE DATABASE exam_system DEFAULT CHARACTER SET utf8mb4;`
-2. 修改 `application.yml` 的 MySQL 帳號密碼
-3. 執行 `mvn spring-boot:run`
-4. 訪問 `http://localhost:8080/api/health`
+## 运行
+1. 建库：`CREATE DATABASE exam_system DEFAULT CHARACTER SET utf8mb4;`
+2. 修改 `application.yml` 的 MySQL 账号密码
+3. 执行 `mvn spring-boot:run`
+4. 访问 `http://localhost:8080/api/health`
 
-## 測試帳號
-| 帳號 | 密碼 | 角色 |
+## 测试账号
+| 账号 | 密码 | 角色 |
 |---|---|---|
 | admin | 123456 | ADMIN |
 | teacher | 123456 | TEACHER |

@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * 考試系統啟動類
+ * 考试系统启动类
  */
 @SpringBootApplication
 public class ExamSystemApplication {

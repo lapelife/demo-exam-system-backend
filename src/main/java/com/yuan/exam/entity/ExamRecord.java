@@ -11,33 +11,33 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 考試作答記錄實體（一次完整作答對應一筆）
+ * 考试作答记录实体（一次完整作答对应一笔）
  */
 @Data
 @Entity
 public class ExamRecord {
 
-    /** 主鍵 ID */
+    /** 主键 ID */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 所屬考試 ID */
+    /** 所属考试 ID */
     private Long examId;
 
-    /** 作答學生 ID */
+    /** 作答学生 ID */
     private Long userId;
 
-    /** 開始作答時間 */
+    /** 开始作答时间 */
     private LocalDateTime startTime;
 
-    /** 提交時間 */
+    /** 提交时间 */
     private LocalDateTime submitTime;
 
-    /** 本次作答總得分 */
+    /** 本次作答总得分 */
     private Integer totalScore;
 
-    /** 作答狀態 */
+    /** 作答状态 */
     @Enumerated(EnumType.STRING)
     private ExamStatus status;
 }

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 考試管理接口
- * - GET 列表/詳情：所有登入者皆可（學生用於查看可參加考試）
+ * 考试管理接口
+ * - GET 列表/详情：所有登录者皆可（学生用于查看可参加考试）
  * - POST/PUT/DELETE：限 ADMIN/TEACHER
  */
 @RestController

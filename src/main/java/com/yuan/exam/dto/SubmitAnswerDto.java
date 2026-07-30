@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 提交作答請求
+ * 提交作答请求
  */
 @Data
 public class SubmitAnswerDto {

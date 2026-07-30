@@ -4,15 +4,15 @@ import com.yuan.exam.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * 使用者 Repository
+ * 用户 Repository
  */
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
-     * 依使用者名稱查詢
+     * 依用户名称查询
      *
-     * @param username 使用者名稱
-     * @return 使用者實體，找不到則為 null
+     * @param username 用户名称
+     * @return 用户实体，找不到则为 null
      */
     User findByUsername(String username);
 }

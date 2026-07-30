@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 學生作答 Service：開始作答、提交並自動判分
+ * 学生作答 Service：开始作答、提交并自动判分
  */
 @Service
 public class ExamTakingService {
@@ -57,33 +57,33 @@ public class ExamTakingService {
     }
 
     /**
-     * 開始作答：建立 ExamRecord 並回傳題目（不含答案）
+     * 开始作答：建立 ExamRecord 并返回题目（不含答案）
      */
     @Transactional
     public Result<StartExamVo> startExam(Long examId) {
         User user = currentUser();
         if (user == null) {
-            return Result.error(401, "未登入");
+            return Result.error(401, "未登录");
         }
 
         Optional<Exam> examOpt = examRepository.findById(examId);
         if (examOpt.isEmpty()) {
-            return Result.error(404, "考試不存在");
+            return Result.error(404, "考试不存在");
         }
         Exam exam = examOpt.get();
 
-        // 檢查是否已有作答記錄
+        // 检查是否已有作答记录
         List<ExamRecord> existing = examRecordRepository.findByExamIdAndUserId(examId, user.getId());
         if (!existing.isEmpty()) {
             ExamRecord latest = existing.get(0);
             if (latest.getStatus() != ExamStatus.IN_PROGRESS) {
-                return Result.error(400, "此考試已完成，不可重複作答");
+                return Result.error(400, "此考试已完成，不可重复作答");
             }
-            // 進行中：回傳既有記錄
+            // 进行中：返回既有记录
             return Result.success(buildStartVo(latest, exam));
         }
 
-        // 建立新作答記錄
+        // 建立新作答记录
         ExamRecord record = new ExamRecord();
         record.setExamId(examId);
         record.setUserId(user.getId());
@@ -95,29 +95,29 @@ public class ExamTakingService {
     }
 
     /**
-     * 提交作答並自動判分
+     * 提交作答并自动判分
      */
     @Transactional
     public Result<ScoreVo> submitExam(SubmitAnswerDto dto) {
         User user = currentUser();
         if (user == null) {
-            return Result.error(401, "未登入");
+            return Result.error(401, "未登录");
         }
 
         Optional<ExamRecord> recordOpt = examRecordRepository.findById(dto.getExamRecordId());
         if (recordOpt.isEmpty()) {
-            return Result.error(404, "作答記錄不存在");
+            return Result.error(404, "作答记录不存在");
         }
         ExamRecord record = recordOpt.get();
         if (!record.getUserId().equals(user.getId())) {
-            return Result.error(403, "無權操作他人作答記錄");
+            return Result.error(403, "无权操作他人作答记录");
         }
         if (record.getStatus() != ExamStatus.IN_PROGRESS) {
-            return Result.error(400, "此作答已提交，不可重複提交");
+            return Result.error(400, "此作答已提交，不可重复提交");
         }
 
         List<Question> questions = questionRepository.findByExamId(record.getExamId());
-        // 題目 id → Question 對照
+        // 题目 id → Question 对照
         var qMap = questions.stream().collect(Collectors.toMap(Question::getId, q -> q));
 
         int totalScore = 0;
@@ -134,7 +134,7 @@ public class ExamTakingService {
             int score = correct ? q.getScore() : 0;
             totalScore += score;
 
-            // 寫入單題作答記錄
+            // 写入单题作答记录
             AnswerRecord ar = new AnswerRecord();
             ar.setExamRecordId(record.getId());
             ar.setQuestionId(q.getId());
@@ -146,13 +146,13 @@ public class ExamTakingService {
             details.add(toDetail(q, a.getAnswer(), correct, score));
         }
 
-        // 更新作答記錄
+        // 更新作答记录
         record.setSubmitTime(LocalDateTime.now());
         record.setTotalScore(totalScore);
         record.setStatus(ExamStatus.GRADED);
         examRecordRepository.save(record);
 
-        // 組裝成績回傳
+        // 组装成绩返回
         Exam exam = examRepository.findById(record.getExamId()).orElse(null);
         ScoreVo vo = new ScoreVo();
         vo.setExamRecordId(record.getId());
@@ -168,7 +168,7 @@ public class ExamTakingService {
     }
 
     /**
-     * 判分邏輯：單選/判斷精確比對；多選集合比對（全對才給分）
+     * 判分逻辑：单选/判断精确比对；多选集合比对（全对才给分）
      */
     private boolean isCorrect(Question q, String studentAnswer) {
         if (studentAnswer == null || studentAnswer.isBlank()) {
@@ -225,7 +225,7 @@ public class ExamTakingService {
                     qv.setType(q.getType());
                     qv.setContent(q.getContent());
                     qv.setOptions(q.getOptions());
-                    // 學生視圖隱藏答案
+                    // 学生视图隐藏答案
                     qv.setAnswer(null);
                     qv.setScore(q.getScore());
                     return qv;

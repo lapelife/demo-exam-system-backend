@@ -13,63 +13,63 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.stream.Collectors;
 
 /**
- * 全局異常處理器
+ * 全局异常处理器
  */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
-     * 處理所有未捕獲的 Exception
+     * 处理所有未捕获的 Exception
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<Void> handleException(Exception e) {
-        log.error("系統異常：", e);
-        return Result.error(500, "系統異常：" + e.getMessage());
+        log.error("系统异常：", e);
+        return Result.error(500, "系统异常：" + e.getMessage());
     }
 
     /**
-     * 處理 RuntimeException
+     * 处理 RuntimeException
      */
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<Void> handleRuntimeException(RuntimeException e) {
-        log.error("執行時期異常：", e);
-        return Result.error(500, "執行時期異常：" + e.getMessage());
+        log.error("运行时异常：", e);
+        return Result.error(500, "运行时异常：" + e.getMessage());
     }
 
     /**
-     * 處理參數校驗失敗（@Valid 觸發）
+     * 处理参数校验失败（@Valid 触发）
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        // 收集所有欄位的錯誤訊息
+        // 收集所有字段的错误消息
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(fe -> fe.getField() + " " + fe.getDefaultMessage())
                 .collect(Collectors.joining("; "));
-        log.warn("參數校驗失敗：{}", message);
-        return Result.error(400, "參數校驗失敗：" + message);
+        log.warn("参数校验失败：{}", message);
+        return Result.error(400, "参数校验失败：" + message);
     }
 
     /**
-     * 處理 @PreAuthorize 角色不足（Spring Security 6 丟出 AuthorizationDeniedException）
+     * 处理 @PreAuthorize 角色不足（Spring Security 6 丢出 AuthorizationDeniedException）
      */
     @ExceptionHandler(AuthorizationDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Result<Void> handleAuthorizationDenied(AuthorizationDeniedException e) {
-        log.warn("權限不足：{}", e.getMessage());
-        return Result.error(403, "權限不足");
+        log.warn("权限不足：{}", e.getMessage());
+        return Result.error(403, "权限不足");
     }
 
     /**
-     * 處理一般存取被拒
+     * 处理一般存取被拒
      */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Result<Void> handleAccessDenied(AccessDeniedException e) {
         log.warn("存取被拒：{}", e.getMessage());
-        return Result.error(403, "權限不足");
+        return Result.error(403, "权限不足");
     }
 }

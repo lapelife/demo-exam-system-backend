@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 考試作答記錄視圖物件
+ * 考试作答记录视图对象
  */
 @Data
 public class ExamRecordVo {

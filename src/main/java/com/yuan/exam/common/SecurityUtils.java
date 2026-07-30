@@ -4,7 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * 安全上下文工具：取得當前登入使用者資訊
+ * 安全上下文工具：取得当前登录用户信息
  */
 public final class SecurityUtils {
 
@@ -12,9 +12,9 @@ public final class SecurityUtils {
     }
 
     /**
-     * 取得當前登入使用者名稱（JWT principal）
+     * 取得当前登录用户名称（JWT principal）
      *
-     * @return 使用者名稱；未登入則回 null
+     * @return 用户名称；未登录则回 null
      */
     public static String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

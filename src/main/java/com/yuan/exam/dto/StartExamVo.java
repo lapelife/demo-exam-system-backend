@@ -5,12 +5,12 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 學生開始作答時回傳的物件：包含作答記錄 ID、考試資訊、題目清單
+ * 学生开始作答时返回的对象：包含作答记录 ID、考试信息、题目清单
  */
 @Data
 public class StartExamVo {
     private Long examRecordId;
     private ExamVo exam;
-    /** 題目清單（不含 answer） */
+    /** 题目清单（不含 answer） */
     private List<QuestionVo> questions;
 }

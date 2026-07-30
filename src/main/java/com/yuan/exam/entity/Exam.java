@@ -10,33 +10,33 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 /**
- * 考試實體
+ * 考试实体
  */
 @Data
 @Entity
 public class Exam {
 
-    /** 主鍵 ID */
+    /** 主键 ID */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 考試名稱 */
+    /** 考试名称 */
     private String name;
 
-    /** 考試時長（分鐘） */
+    /** 考试时长（分钟） */
     private Integer duration;
 
-    /** 考試總分 */
+    /** 考试总分 */
     private Integer totalScore;
 
-    /** 開始時間 */
+    /** 开始时间 */
     private LocalDateTime startTime;
 
-    /** 結束時間 */
+    /** 结束时间 */
     private LocalDateTime endTime;
 
-    /** 建立時間 */
+    /** 建立时间 */
     @CreationTimestamp
     private LocalDateTime createTime;
 }

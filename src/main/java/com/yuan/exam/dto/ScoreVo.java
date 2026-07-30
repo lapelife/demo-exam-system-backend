@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 成績視圖物件（含每題判分明細）
+ * 成绩视图对象（含每题判分明细）
  */
 @Data
 public class ScoreVo {
@@ -19,6 +19,6 @@ public class ScoreVo {
     private LocalDateTime startTime;
     private LocalDateTime submitTime;
     private ExamStatus status;
-    /** 每題判分明細 */
+    /** 每题判分明细 */
     private List<AnswerDetailVo> details;
 }

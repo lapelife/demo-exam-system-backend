@@ -5,7 +5,7 @@ spring:
   application:
     name: exam-system
 
-  # 資料來源配置
+  # 数据源配置
   datasource:
     url: jdbc:mysql://localhost:3306/exam_system?useSSL=false&serverTimezone=Asia/Shanghai
     username: root
@@ -24,4 +24,4 @@ spring:
 # JWT 配置
 jwt:
   secret: yuan-exam-system-secret-key-2026-very-long-xxxxxxxxxxxxxx
-  expiration: 86400000  # 24 小時（毫秒）
+  expiration: 86400000  # 24 小时（毫秒）

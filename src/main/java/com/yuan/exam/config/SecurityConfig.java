@@ -13,9 +13,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * Spring Security 配置
- * - 認證與健康檢查公開放行
- * - 其餘路徑需登入（JWT）
- * - 細粒度角色限制透過 @PreAuthorize 在 Controller 上控制
+ * - 认证与健康检查公开放行
+ * - 其余路径需登录（JWT）
+ * - 细粒度角色限制透过 @PreAuthorize 在 Controller 上控制
  */
 @Configuration
 @EnableWebSecurity
@@ -31,37 +31,37 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 關閉 CSRF（前後端分離 + JWT 場景）
+                // 关闭 CSRF（前后端分离 + JWT 场景）
                 .csrf(csrf -> csrf.disable())
-                // 不使用 Session，改以 JWT 無狀態認證
+                // 不使用 Session，改以 JWT 无状态认证
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 認證與健康檢查接口公開
+                        // 认证与健康检查接口公开
                         .requestMatchers("/api/auth/**", "/api/health").permitAll()
-                        // 其餘路徑一律需登入
+                        // 其余路径一律需登录
                         .anyRequest().authenticated()
                 )
-                // 認證失敗（未登入 / Token 無效）與授權失敗（權限不足）回傳 JSON
+                // 认证失败（未登录 / Token 无效）与授权失败（权限不足）返回 JSON
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) ->
-                                writeJsonError(response, HttpServletResponse.SC_UNAUTHORIZED, 401, "未登入或 Token 無效"))
+                                writeJsonError(response, HttpServletResponse.SC_UNAUTHORIZED, 401, "未登录或 Token 无效"))
                         .accessDeniedHandler((request, response, accessDeniedException) ->
-                                writeJsonError(response, HttpServletResponse.SC_FORBIDDEN, 403, "權限不足"))
+                                writeJsonError(response, HttpServletResponse.SC_FORBIDDEN, 403, "权限不足"))
                 )
-                // 在帳密認證過濾器之前掛上 JWT 過濾器
+                // 在账密认证过滤器之前挂上 JWT 过滤器
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     /**
-     * 直接寫出 JSON 錯誤回應（避免依賴 ObjectMapper）
+     * 直接写出 JSON 错误响应（避免依赖 ObjectMapper）
      */
     private void writeJsonError(HttpServletResponse response, int httpStatus, int code, String msg) throws java.io.IOException {
         response.setStatus(httpStatus);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        // 簡易 JSON：{"code":xxx,"msg":"xxx","data":null}
+        // 简易 JSON：{"code":xxx,"msg":"xxx","data":null}
         String json = "{\"code\":" + code + ",\"msg\":\"" + msg.replace("\"", "\\\"") + "\",\"data\":null}";
         response.getWriter().write(json);
     }

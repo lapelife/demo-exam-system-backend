@@ -3,20 +3,20 @@ package com.yuan.exam.common;
 import lombok.Data;
 
 /**
- * 統一返回格式
+ * 统一返回格式
  *
- * @param <T> 資料型別
+ * @param <T> 数据类型
  */
 @Data
 public class Result<T> {
 
-    /** 狀態碼 */
+    /** 状态码 */
     private int code;
 
-    /** 提示訊息 */
+    /** 提示消息 */
     private String msg;
 
-    /** 資料本體 */
+    /** 数据本体 */
     private T data;
 
     public Result() {
@@ -29,24 +29,24 @@ public class Result<T> {
     }
 
     /**
-     * 成功回應（無資料）
+     * 成功响应（无数据）
      */
     public static <T> Result<T> success() {
         return new Result<>(200, "success", null);
     }
 
     /**
-     * 成功回應（帶資料）
+     * 成功响应（带数据）
      */
     public static <T> Result<T> success(T data) {
         return new Result<>(200, "success", data);
     }
 
     /**
-     * 失敗回應
+     * 失败响应
      *
-     * @param code 狀態碼
-     * @param msg  錯誤訊息
+     * @param code 状态码
+     * @param msg  错误消息
      */
     public static <T> Result<T> error(int code, String msg) {
         return new Result<>(code, msg, null);

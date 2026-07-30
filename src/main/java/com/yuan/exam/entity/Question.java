@@ -9,31 +9,31 @@ import jakarta.persistence.Id;
 import lombok.Data;
 
 /**
- * 題目實體
+ * 题目实体
  */
 @Data
 @Entity
 public class Question {
 
-    /** 主鍵 ID */
+    /** 主键 ID */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 所屬考試 ID */
+    /** 所属考试 ID */
     private Long examId;
 
-    /** 題目類型 */
+    /** 题目类型 */
     @Enumerated(EnumType.STRING)
     private QuestionType type;
 
-    /** 題目內容 */
+    /** 题目内容 */
     private String content;
 
-    /** 選項（JSON 字串） */
+    /** 选项（JSON 字符串） */
     private String options;
 
-    /** 正確答案 */
+    /** 正确答案 */
     private String answer;
 
     /** 分值 */

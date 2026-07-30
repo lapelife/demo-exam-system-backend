@@ -1,13 +1,13 @@
 package com.yuan.exam.entity;
 
 /**
- * 使用者角色枚舉
+ * 用户角色枚举
  */
 public enum Role {
-    /** 管理員 */
+    /** 管理员 */
     ADMIN,
-    /** 教師 */
+    /** 教师 */
     TEACHER,
-    /** 學生 */
+    /** 学生 */
     STUDENT
 }

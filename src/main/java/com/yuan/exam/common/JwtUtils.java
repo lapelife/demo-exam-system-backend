@@ -11,32 +11,32 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
- * JWT 工具類：負責產生、解析與驗證 Token
+ * JWT 工具类：负责产生、解析与验证 Token
  */
 @Component
 public class JwtUtils {
 
-    /** JWT 簽名密鑰字串（來自 application.yml） */
+    /** JWT 签名密钥字符串（来自 application.yml） */
     @Value("${jwt.secret}")
     private String secret;
 
-    /** Token 過期時間（毫秒） */
+    /** Token 过期时间（毫秒） */
     @Value("${jwt.expiration}")
     private long expiration;
 
     /**
-     * 取得簽名用密鑰
+     * 取得签名用密钥
      */
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
-     * 產生 JWT Token
+     * 产生 JWT Token
      *
-     * @param username 使用者名稱
+     * @param username 用户名称
      * @param role     角色
-     * @return JWT 字串
+     * @return JWT 字符串
      */
     public String generateToken(String username, String role) {
         Date now = new Date();
@@ -55,8 +55,8 @@ public class JwtUtils {
     /**
      * 解析 Token，取出 username
      *
-     * @param token JWT 字串
-     * @return 使用者名稱
+     * @param token JWT 字符串
+     * @return 用户名称
      */
     public String parseToken(String token) {
         Claims claims = parseClaims(token);
@@ -64,10 +64,10 @@ public class JwtUtils {
     }
 
     /**
-     * 從 Token 中解析角色
+     * 从 Token 中解析角色
      *
-     * @param token JWT 字串
-     * @return 角色字串
+     * @param token JWT 字符串
+     * @return 角色字符串
      */
     public String parseRole(String token) {
         Claims claims = parseClaims(token);
@@ -75,10 +75,10 @@ public class JwtUtils {
     }
 
     /**
-     * 驗證 Token 是否有效
+     * 验证 Token 是否有效
      *
-     * @param token JWT 字串
-     * @return true 表示有效，false 表示無效或已過期
+     * @param token JWT 字符串
+     * @return true 表示有效，false 表示无效或已过期
      */
     public boolean validateToken(String token) {
         try {

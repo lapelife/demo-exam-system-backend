@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 成績查詢接口（學生查看自己的成績與明細）
+ * 成绩查询接口（学生查看自己的成绩与明细）
  */
 @RestController
 @RequestMapping("/api/scores")
@@ -25,7 +25,7 @@ public class ScoreController {
     }
 
     /**
-     * 我的成績列表
+     * 我的成绩列表
      */
     @GetMapping
     public Result<List<ExamRecordVo>> myScores() {
@@ -33,7 +33,7 @@ public class ScoreController {
     }
 
     /**
-     * 單次作答成績明細
+     * 单次作答成绩明细
      */
     @GetMapping("/{examRecordId}")
     public Result<ScoreVo> detail(@PathVariable Long examRecordId) {

@@ -1,10 +1,10 @@
 package com.yuan.exam.entity;
 
 /**
- * 考試作答狀態枚舉
+ * 考试作答状态枚举
  */
 public enum ExamStatus {
-    /** 進行中（已開始尚未提交） */
+    /** 进行中（已开始尚未提交） */
     IN_PROGRESS,
     /** 已提交（待判分或已判分） */
     SUBMITTED,

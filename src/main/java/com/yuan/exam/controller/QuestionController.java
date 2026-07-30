@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 題目管理接口（依考試 ID）
- * - GET：所有登入者皆可（學生作答時取題）
+ * 题目管理接口（依考试 ID）
+ * - GET：所有登录者皆可（学生作答时取题）
  * - POST/PUT/DELETE：限 ADMIN/TEACHER
  */
 @RestController

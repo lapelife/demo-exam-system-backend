@@ -4,8 +4,8 @@ import com.yuan.exam.entity.QuestionType;
 import lombok.Data;
 
 /**
- * 題目視圖物件
- * 學生作答時 answer 欄位會被清空，避免洩漏答案
+ * 题目视图对象
+ * 学生作答时 answer 字段会被清空，避免泄漏答案
  */
 @Data
 public class QuestionVo {
@@ -14,7 +14,7 @@ public class QuestionVo {
     private QuestionType type;
     private String content;
     private String options;
-    /** 正確答案；學生視圖時為 null */
+    /** 正确答案；学生视图时为 null */
     private String answer;
     private Integer score;
 }

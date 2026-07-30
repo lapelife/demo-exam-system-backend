@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 /**
- * 資料初始化：應用啟動時若表為空，則寫入測試帳號與示範考試資料
+ * 数据初始化：应用启动时若表为空，则写入测试账号与示范考试数据
  */
 @Slf4j
 @Component
@@ -40,67 +40,67 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     /**
-     * 初始化測試帳號
+     * 初始化测试账号
      */
     private void initUsers() {
         if (userRepository.count() > 0) {
-            log.info("User 表已有資料，跳過初始化");
+            log.info("User 表已有数据，跳过初始化");
             return;
         }
-        userRepository.save(buildUser("admin", "123456", Role.ADMIN, "系統管理員"));
-        userRepository.save(buildUser("teacher", "123456", Role.TEACHER, "測試教師"));
-        userRepository.save(buildUser("student", "123456", Role.STUDENT, "測試學生"));
-        log.info("已初始化測試帳號：admin / teacher / student（密碼均為 123456）");
+        userRepository.save(buildUser("admin", "123456", Role.ADMIN, "系统管理员"));
+        userRepository.save(buildUser("teacher", "123456", Role.TEACHER, "测试教师"));
+        userRepository.save(buildUser("student", "123456", Role.STUDENT, "测试学生"));
+        log.info("已初始化测试账号：admin / teacher / student（密码均为 123456）");
     }
 
     /**
-     * 初始化示範考試與題目
+     * 初始化示范考试与题目
      */
     private void initSampleExam() {
         if (examRepository.count() > 0) {
-            log.info("Exam 表已有資料，跳過示範考試初始化");
+            log.info("Exam 表已有数据，跳过示范考试初始化");
             return;
         }
 
         Exam exam = new Exam();
-        exam.setName("Java 基礎測驗");
+        exam.setName("Java 基础测验");
         exam.setDuration(30);
         exam.setTotalScore(100);
         exam.setStartTime(LocalDateTime.now().minusDays(1));
         exam.setEndTime(LocalDateTime.now().plusDays(30));
         exam = examRepository.save(exam);
 
-        // 2 題單選（各 20 分）
+        // 2 题单选（各 20 分）
         questionRepository.save(buildQuestion(exam.getId(), QuestionType.SINGLE,
-                "下列哪一個是 Java 的自動裝箱（Autoboxing）行為？",
-                "[{\"key\":\"A\",\"text\":\"int 直接賦值給 Object\"},{\"key\":\"B\",\"text\":\"int 自動轉為 Integer\"},{\"key\":\"C\",\"text\":\"String 轉 int\"},{\"key\":\"D\",\"text\":\"Integer 轉 String\"}]",
+                "下列哪一个是 Java 的自动装箱（Autoboxing）行为？",
+                "[{\"key\":\"A\",\"text\":\"int 直接赋值给 Object\"},{\"key\":\"B\",\"text\":\"int 自动转为 Integer\"},{\"key\":\"C\",\"text\":\"String 转 int\"},{\"key\":\"D\",\"text\":\"Integer 转 String\"}]",
                 "B", 20));
         questionRepository.save(buildQuestion(exam.getId(), QuestionType.SINGLE,
-                "Spring Boot 預設的應用埠是？",
+                "Spring Boot 默认的应用端口是？",
                 "[{\"key\":\"A\",\"text\":\"80\"},{\"key\":\"B\",\"text\":\"8080\"},{\"key\":\"C\",\"text\":\"3306\"},{\"key\":\"D\",\"text\":\"8443\"}]",
                 "B", 20));
 
-        // 2 題多選（各 20 分）
+        // 2 题多选（各 20 分）
         questionRepository.save(buildQuestion(exam.getId(), QuestionType.MULTI,
-                "下列哪些是 Spring Boot 常用的 Starter？（多選）",
+                "下列哪些是 Spring Boot 常用的 Starter？（多选）",
                 "[{\"key\":\"A\",\"text\":\"spring-boot-starter-web\"},{\"key\":\"B\",\"text\":\"spring-boot-starter-data-jpa\"},{\"key\":\"C\",\"text\":\"spring-boot-starter-security\"},{\"key\":\"D\",\"text\":\"spring-boot-starter-windows\"}]",
                 "A,B,C", 20));
         questionRepository.save(buildQuestion(exam.getId(), QuestionType.MULTI,
-                "下列哪些屬於 JPA 的核心介面？（多選）",
+                "下列哪些属于 JPA 的核心接口？（多选）",
                 "[{\"key\":\"A\",\"text\":\"EntityManager\"},{\"key\":\"B\",\"text\":\"CriteriaBuilder\"},{\"key\":\"C\",\"text\":\"Query\"},{\"key\":\"D\",\"text\":\"RestTemplate\"}]",
                 "A,B,C", 20));
 
-        // 2 題判斷（各 10 分）
+        // 2 题判断（各 10 分）
         questionRepository.save(buildQuestion(exam.getId(), QuestionType.JUDGE,
-                "Java 中的 String 是不可變（immutable）物件。",
-                "[{\"key\":\"A\",\"text\":\"正確\"},{\"key\":\"B\",\"text\":\"錯誤\"}]",
+                "Java 中的 String 是不可变（immutable）对象。",
+                "[{\"key\":\"A\",\"text\":\"正确\"},{\"key\":\"B\",\"text\":\"错误\"}]",
                 "A", 10));
         questionRepository.save(buildQuestion(exam.getId(), QuestionType.JUDGE,
-                "Spring Security 預設會開啟 CSRF 防護。",
-                "[{\"key\":\"A\",\"text\":\"正確\"},{\"key\":\"B\",\"text\":\"錯誤\"}]",
+                "Spring Security 默认会开启 CSRF 防护。",
+                "[{\"key\":\"A\",\"text\":\"正确\"},{\"key\":\"B\",\"text\":\"错误\"}]",
                 "A", 10));
 
-        log.info("已初始化示範考試「Java 基礎測驗」與 6 題題目");
+        log.info("已初始化示范考试「Java 基础测验」与 6 题题目");
     }
 
     private User buildUser(String username, String password, Role role, String nickname) {

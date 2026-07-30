@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 登入成功回應 DTO
+ * 登录成功响应 DTO
  */
 @Data
 @NoArgsConstructor
@@ -15,7 +15,7 @@ public class LoginResponse {
     /** JWT Token */
     private String token;
 
-    /** 使用者名稱 */
+    /** 用户名称 */
     private String username;
 
     /** 角色 */

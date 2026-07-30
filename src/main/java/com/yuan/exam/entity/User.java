@@ -12,34 +12,34 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 /**
- * 使用者實體
+ * 用户实体
  */
 @Data
 @Entity
 public class User {
 
-    /** 主鍵 ID */
+    /** 主键 ID */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 使用者名稱 */
+    /** 用户名称 */
     private String username;
 
-    /** 密碼 */
+    /** 密码 */
     private String password;
 
     /** 角色 */
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    /** 暱稱（可空） */
+    /** 暱称（可空） */
     private String nickname;
 
-    /** 電子郵件（可空） */
+    /** 电子邮件（可空） */
     private String email;
 
-    /** 建立時間 */
+    /** 建立时间 */
     @CreationTimestamp
     private LocalDateTime createTime;
 }

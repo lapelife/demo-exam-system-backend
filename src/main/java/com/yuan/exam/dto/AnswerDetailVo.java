@@ -4,7 +4,7 @@ import com.yuan.exam.entity.QuestionType;
 import lombok.Data;
 
 /**
- * 單題判分明細（成績查詢時回傳）
+ * 单题判分明细（成绩查询时返回）
  */
 @Data
 public class AnswerDetailVo {

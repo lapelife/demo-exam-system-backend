@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /**
- * 單題作答記錄 Repository
+ * 单题作答记录 Repository
  */
 public interface AnswerRecordRepository extends JpaRepository<AnswerRecord, Long> {
 
     /**
-     * 依考試作答記錄 ID 查詢所有單題作答
+     * 依考试作答记录 ID 查询所有单题作答
      */
     List<AnswerRecord> findByExamRecordId(Long examRecordId);
 }

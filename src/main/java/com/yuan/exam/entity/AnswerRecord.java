@@ -7,29 +7,29 @@ import jakarta.persistence.Id;
 import lombok.Data;
 
 /**
- * 單題作答記錄實體（每題一筆，含判分結果）
+ * 单题作答记录实体（每题一笔，含判分结果）
  */
 @Data
 @Entity
 public class AnswerRecord {
 
-    /** 主鍵 ID */
+    /** 主键 ID */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 所屬考試作答記錄 ID */
+    /** 所属考试作答记录 ID */
     private Long examRecordId;
 
-    /** 題目 ID */
+    /** 题目 ID */
     private Long questionId;
 
-    /** 學生作答內容（單選/判斷為單值；多選為逗號分隔） */
+    /** 学生作答内容（单选/判断为单值；多选为逗号分隔） */
     private String answer;
 
-    /** 是否答對 */
+    /** 是否答对 */
     private Boolean isCorrect;
 
-    /** 本題得分 */
+    /** 本题得分 */
     private Integer score;
 }

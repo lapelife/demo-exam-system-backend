@@ -1,13 +1,13 @@
 package com.yuan.exam.entity;
 
 /**
- * 題目類型枚舉
+ * 题目类型枚举
  */
 public enum QuestionType {
-    /** 單選題 */
+    /** 单选题 */
     SINGLE,
-    /** 多選題 */
+    /** 多选题 */
     MULTI,
-    /** 判斷題 */
+    /** 判断题 */
     JUDGE
 }

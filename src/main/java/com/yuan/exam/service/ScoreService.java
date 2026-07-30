@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 成績查詢 Service
+ * 成绩查询 Service
  */
 @Service
 public class ScoreService {
@@ -48,12 +48,12 @@ public class ScoreService {
     }
 
     /**
-     * 列出當前學生的所有成績
+     * 列出当前学生的所有成绩
      */
     public Result<List<ExamRecordVo>> myScores() {
         User user = currentUser();
         if (user == null) {
-            return Result.error(401, "未登入");
+            return Result.error(401, "未登录");
         }
         List<ExamRecord> records = examRecordRepository.findByUserIdOrderByStartTimeDesc(user.getId());
         Map<Long, String> examNameMap = new HashMap<>();
@@ -70,20 +70,20 @@ public class ScoreService {
     }
 
     /**
-     * 查詢單次作答的成績明細
+     * 查询单次作答的成绩明细
      */
     public Result<ScoreVo> detail(Long examRecordId) {
         User user = currentUser();
         if (user == null) {
-            return Result.error(401, "未登入");
+            return Result.error(401, "未登录");
         }
         Optional<ExamRecord> recordOpt = examRecordRepository.findById(examRecordId);
         if (recordOpt.isEmpty()) {
-            return Result.error(404, "作答記錄不存在");
+            return Result.error(404, "作答记录不存在");
         }
         ExamRecord record = recordOpt.get();
         if (!record.getUserId().equals(user.getId())) {
-            return Result.error(403, "無權查看他人成績");
+            return Result.error(403, "无权查看他人成绩");
         }
         Exam exam = examRepository.findById(record.getExamId()).orElse(null);
 
