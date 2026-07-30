@@ -13,10 +13,10 @@ public interface ExamRecordRepository extends JpaRepository<ExamRecord, Long> {
     /**
      * 依学生 ID 查询所有作答记录
      */
-    List<ExamRecord> findByUserIdOrderByStartTimeDesc(Long userId);
+    List<ExamRecord> findByUser_IdOrderByStartTimeDesc(Long userId);
 
     /**
      * 依考试 ID 与学生 ID 查询作答记录（判断是否已开始/已提交）
      */
-    List<ExamRecord> findByExamIdAndUserId(Long examId, Long userId);
+    List<ExamRecord> findByExam_IdAndUser_Id(Long examId, Long userId);
 }

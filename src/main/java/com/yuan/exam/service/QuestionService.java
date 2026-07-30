@@ -2,8 +2,8 @@ package com.yuan.exam.service;
 
 import com.yuan.exam.common.Result;
 import com.yuan.exam.dto.QuestionVo;
+import com.yuan.exam.entity.Exam;
 import com.yuan.exam.entity.Question;
-import com.yuan.exam.entity.QuestionType;
 import com.yuan.exam.repository.ExamRepository;
 import com.yuan.exam.repository.QuestionRepository;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class QuestionService {
         if (!examRepository.existsById(examId)) {
             return Result.error(404, "考试不存在");
         }
-        List<QuestionVo> list = questionRepository.findByExamId(examId).stream()
+        List<QuestionVo> list = questionRepository.findByExam_Id(examId).stream()
                 .map(this::toVo)
                 .toList();
         return Result.success(list);
@@ -42,11 +42,12 @@ public class QuestionService {
      * 新增题目
      */
     public Result<QuestionVo> create(Long examId, QuestionVo vo) {
-        if (!examRepository.existsById(examId)) {
+        Optional<Exam> examOpt = examRepository.findById(examId);
+        if (examOpt.isEmpty()) {
             return Result.error(404, "考试不存在");
         }
         Question q = new Question();
-        q.setExamId(examId);
+        q.setExam(examOpt.get());
         q.setType(vo.getType());
         q.setContent(vo.getContent());
         q.setOptions(vo.getOptions());
@@ -88,7 +89,7 @@ public class QuestionService {
     private QuestionVo toVo(Question q) {
         QuestionVo vo = new QuestionVo();
         vo.setId(q.getId());
-        vo.setExamId(q.getExamId());
+        vo.setExamId(q.getExam().getId());
         vo.setType(q.getType());
         vo.setContent(q.getContent());
         vo.setOptions(q.getOptions());

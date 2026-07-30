@@ -13,5 +13,5 @@ public interface AnswerRecordRepository extends JpaRepository<AnswerRecord, Long
     /**
      * 依考试作答记录 ID 查询所有单题作答
      */
-    List<AnswerRecord> findByExamRecordId(Long examRecordId);
+    List<AnswerRecord> findByExamRecord_Id(Long examRecordId);
 }

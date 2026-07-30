@@ -8,6 +8,7 @@ import com.yuan.exam.entity.User;
 import com.yuan.exam.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,10 +27,12 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserRepository userRepository, JwtUtils jwtUtils) {
+    public AuthController(UserRepository userRepository, JwtUtils jwtUtils, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -46,8 +49,8 @@ public class AuthController {
             return Result.error(401, "用户不存在");
         }
 
-        // 密码比对（目前为明文比对；上线应改为 BCrypt 加密比对）
-        if (!user.getPassword().equals(request.getPassword())) {
+        // BCrypt 密码比对
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return Result.error(401, "密码错误");
         }
 

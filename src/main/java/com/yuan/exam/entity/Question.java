@@ -3,9 +3,12 @@ package com.yuan.exam.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 /**
@@ -20,8 +23,10 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 所属考试 ID */
-    private Long examId;
+    /** 所属考试 */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exam_id", nullable = false)
+    private Exam exam;
 
     /** 题目类型 */
     @Enumerated(EnumType.STRING)

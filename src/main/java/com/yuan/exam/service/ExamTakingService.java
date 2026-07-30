@@ -72,8 +72,13 @@ public class ExamTakingService {
         }
         Exam exam = examOpt.get();
 
+        Result<Void> windowCheck = checkExamWindow(exam, LocalDateTime.now());
+        if (windowCheck.getCode() != 200) {
+            return Result.error(windowCheck.getCode(), windowCheck.getMsg());
+        }
+
         // 检查是否已有作答记录
-        List<ExamRecord> existing = examRecordRepository.findByExamIdAndUserId(examId, user.getId());
+        List<ExamRecord> existing = examRecordRepository.findByExam_IdAndUser_Id(examId, user.getId());
         if (!existing.isEmpty()) {
             ExamRecord latest = existing.get(0);
             if (latest.getStatus() != ExamStatus.IN_PROGRESS) {
@@ -85,8 +90,8 @@ public class ExamTakingService {
 
         // 建立新作答记录
         ExamRecord record = new ExamRecord();
-        record.setExamId(examId);
-        record.setUserId(user.getId());
+        record.setExam(exam);
+        record.setUser(user);
         record.setStartTime(LocalDateTime.now());
         record.setStatus(ExamStatus.IN_PROGRESS);
         record = examRecordRepository.save(record);
@@ -109,14 +114,27 @@ public class ExamTakingService {
             return Result.error(404, "作答记录不存在");
         }
         ExamRecord record = recordOpt.get();
-        if (!record.getUserId().equals(user.getId())) {
+        if (!record.getUser().getId().equals(user.getId())) {
             return Result.error(403, "无权操作他人作答记录");
         }
         if (record.getStatus() != ExamStatus.IN_PROGRESS) {
             return Result.error(400, "此作答已提交，不可重复提交");
         }
 
-        List<Question> questions = questionRepository.findByExamId(record.getExamId());
+        Exam exam = record.getExam();
+        LocalDateTime now = LocalDateTime.now();
+
+        if (exam.getEndTime() != null && now.isAfter(exam.getEndTime())) {
+            return Result.error(400, "考试已结束，不可提交");
+        }
+        if (exam.getDuration() != null && record.getStartTime() != null) {
+            LocalDateTime deadline = record.getStartTime().plusMinutes(exam.getDuration());
+            if (now.isAfter(deadline)) {
+                return Result.error(400, "作答超时，不可提交");
+            }
+        }
+
+        List<Question> questions = questionRepository.findByExam_Id(exam.getId());
         // 题目 id → Question 对照
         var qMap = questions.stream().collect(Collectors.toMap(Question::getId, q -> q));
 
@@ -136,8 +154,8 @@ public class ExamTakingService {
 
             // 写入单题作答记录
             AnswerRecord ar = new AnswerRecord();
-            ar.setExamRecordId(record.getId());
-            ar.setQuestionId(q.getId());
+            ar.setExamRecord(record);
+            ar.setQuestion(q);
             ar.setAnswer(a.getAnswer());
             ar.setIsCorrect(correct);
             ar.setScore(score);
@@ -147,17 +165,16 @@ public class ExamTakingService {
         }
 
         // 更新作答记录
-        record.setSubmitTime(LocalDateTime.now());
+        record.setSubmitTime(now);
         record.setTotalScore(totalScore);
         record.setStatus(ExamStatus.GRADED);
         examRecordRepository.save(record);
 
         // 组装成绩返回
-        Exam exam = examRepository.findById(record.getExamId()).orElse(null);
         ScoreVo vo = new ScoreVo();
         vo.setExamRecordId(record.getId());
-        vo.setExamId(record.getExamId());
-        vo.setExamName(exam == null ? "" : exam.getName());
+        vo.setExamId(exam.getId());
+        vo.setExamName(exam.getName());
         vo.setTotalScore(totalScore);
         vo.setExamMaxScore(maxScore);
         vo.setStartTime(record.getStartTime());
@@ -165,6 +182,19 @@ public class ExamTakingService {
         vo.setStatus(record.getStatus());
         vo.setDetails(details);
         return Result.success(vo);
+    }
+
+    /**
+     * 校验当前时间是否在考试开放窗口内
+     */
+    private Result<Void> checkExamWindow(Exam exam, LocalDateTime now) {
+        if (exam.getStartTime() != null && now.isBefore(exam.getStartTime())) {
+            return Result.error(400, "考试尚未开始");
+        }
+        if (exam.getEndTime() != null && now.isAfter(exam.getEndTime())) {
+            return Result.error(400, "考试已结束");
+        }
+        return Result.success();
     }
 
     /**
@@ -217,11 +247,11 @@ public class ExamTakingService {
         examVo.setEndTime(exam.getEndTime());
         vo.setExam(examVo);
 
-        List<QuestionVo> questions = questionRepository.findByExamId(exam.getId()).stream()
+        List<QuestionVo> questions = questionRepository.findByExam_Id(exam.getId()).stream()
                 .map(q -> {
                     QuestionVo qv = new QuestionVo();
                     qv.setId(q.getId());
-                    qv.setExamId(q.getExamId());
+                    qv.setExamId(exam.getId());
                     qv.setType(q.getType());
                     qv.setContent(q.getContent());
                     qv.setOptions(q.getOptions());

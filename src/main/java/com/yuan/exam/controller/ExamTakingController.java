@@ -6,6 +6,7 @@ import com.yuan.exam.dto.StartExamVo;
 import com.yuan.exam.dto.SubmitAnswerDto;
 import com.yuan.exam.service.ExamTakingService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 学生作答接口：开始作答、提交并自动判分
+ * 学生作答接口：开始作答、提交并自动判分（仅 STUDENT）
  */
 @RestController
 @RequestMapping("/api/take")
+@PreAuthorize("hasRole('STUDENT')")
 public class ExamTakingController {
 
     private final ExamTakingService examTakingService;

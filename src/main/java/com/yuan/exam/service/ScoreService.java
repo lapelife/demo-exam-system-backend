@@ -12,16 +12,11 @@ import com.yuan.exam.entity.Question;
 import com.yuan.exam.entity.User;
 import com.yuan.exam.repository.AnswerRecordRepository;
 import com.yuan.exam.repository.ExamRecordRepository;
-import com.yuan.exam.repository.ExamRepository;
-import com.yuan.exam.repository.QuestionRepository;
 import com.yuan.exam.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 成绩查询 Service
@@ -31,40 +26,28 @@ public class ScoreService {
 
     private final ExamRecordRepository examRecordRepository;
     private final AnswerRecordRepository answerRecordRepository;
-    private final ExamRepository examRepository;
-    private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
 
     public ScoreService(ExamRecordRepository examRecordRepository,
                         AnswerRecordRepository answerRecordRepository,
-                        ExamRepository examRepository,
-                        QuestionRepository questionRepository,
                         UserRepository userRepository) {
         this.examRecordRepository = examRecordRepository;
         this.answerRecordRepository = answerRecordRepository;
-        this.examRepository = examRepository;
-        this.questionRepository = questionRepository;
         this.userRepository = userRepository;
     }
 
     /**
      * 列出当前学生的所有成绩
      */
+    @Transactional(readOnly = true)
     public Result<List<ExamRecordVo>> myScores() {
         User user = currentUser();
         if (user == null) {
             return Result.error(401, "未登录");
         }
-        List<ExamRecord> records = examRecordRepository.findByUserIdOrderByStartTimeDesc(user.getId());
-        Map<Long, String> examNameMap = new HashMap<>();
-        for (ExamRecord r : records) {
-            examNameMap.computeIfAbsent(r.getExamId(), id -> {
-                Exam e = examRepository.findById(id).orElse(null);
-                return e == null ? "" : e.getName();
-            });
-        }
+        List<ExamRecord> records = examRecordRepository.findByUser_IdOrderByStartTimeDesc(user.getId());
         List<ExamRecordVo> list = records.stream()
-                .map(r -> toVo(r, examNameMap.getOrDefault(r.getExamId(), ""), user.getUsername()))
+                .map(r -> toVo(r, r.getExam().getName(), user.getUsername()))
                 .toList();
         return Result.success(list);
     }
@@ -72,48 +55,47 @@ public class ScoreService {
     /**
      * 查询单次作答的成绩明细
      */
+    @Transactional(readOnly = true)
     public Result<ScoreVo> detail(Long examRecordId) {
         User user = currentUser();
         if (user == null) {
             return Result.error(401, "未登录");
         }
-        Optional<ExamRecord> recordOpt = examRecordRepository.findById(examRecordId);
+        var recordOpt = examRecordRepository.findById(examRecordId);
         if (recordOpt.isEmpty()) {
             return Result.error(404, "作答记录不存在");
         }
         ExamRecord record = recordOpt.get();
-        if (!record.getUserId().equals(user.getId())) {
+        if (!record.getUser().getId().equals(user.getId())) {
             return Result.error(403, "无权查看他人成绩");
         }
-        Exam exam = examRepository.findById(record.getExamId()).orElse(null);
+        Exam exam = record.getExam();
 
-        List<AnswerRecord> answers = answerRecordRepository.findByExamRecordId(examRecordId);
-        Map<Long, Question> qMap = questionRepository.findByExamId(record.getExamId()).stream()
-                .collect(Collectors.toMap(Question::getId, q -> q));
+        List<AnswerRecord> answers = answerRecordRepository.findByExamRecord_Id(examRecordId);
 
         List<AnswerDetailVo> details = answers.stream()
                 .map(ar -> {
-                    Question q = qMap.get(ar.getQuestionId());
+                    Question q = ar.getQuestion();
                     AnswerDetailVo d = new AnswerDetailVo();
-                    d.setQuestionId(ar.getQuestionId());
-                    d.setContent(q == null ? "" : q.getContent());
-                    d.setType(q == null ? null : q.getType());
-                    d.setOptions(q == null ? null : q.getOptions());
+                    d.setQuestionId(q.getId());
+                    d.setContent(q.getContent());
+                    d.setType(q.getType());
+                    d.setOptions(q.getOptions());
                     d.setStudentAnswer(ar.getAnswer());
-                    d.setCorrectAnswer(q == null ? null : q.getAnswer());
+                    d.setCorrectAnswer(q.getAnswer());
                     d.setIsCorrect(ar.getIsCorrect());
                     d.setScore(ar.getScore());
-                    d.setMaxScore(q == null ? 0 : q.getScore());
+                    d.setMaxScore(q.getScore());
                     return d;
                 })
                 .toList();
 
         ScoreVo vo = new ScoreVo();
         vo.setExamRecordId(record.getId());
-        vo.setExamId(record.getExamId());
-        vo.setExamName(exam == null ? "" : exam.getName());
+        vo.setExamId(exam.getId());
+        vo.setExamName(exam.getName());
         vo.setTotalScore(record.getTotalScore());
-        vo.setExamMaxScore(exam == null ? 0 : exam.getTotalScore());
+        vo.setExamMaxScore(exam.getTotalScore());
         vo.setStartTime(record.getStartTime());
         vo.setSubmitTime(record.getSubmitTime());
         vo.setStatus(record.getStatus());
@@ -124,13 +106,14 @@ public class ScoreService {
     private ExamRecordVo toVo(ExamRecord r, String examName, String username) {
         ExamRecordVo vo = new ExamRecordVo();
         vo.setId(r.getId());
-        vo.setExamId(r.getExamId());
+        vo.setExamId(r.getExam().getId());
         vo.setExamName(examName);
-        vo.setUserId(r.getUserId());
+        vo.setUserId(r.getUser().getId());
         vo.setUsername(username);
         vo.setStartTime(r.getStartTime());
         vo.setSubmitTime(r.getSubmitTime());
         vo.setTotalScore(r.getTotalScore());
+        vo.setExamMaxScore(r.getExam().getTotalScore());
         vo.setStatus(r.getStatus());
         return vo;
     }

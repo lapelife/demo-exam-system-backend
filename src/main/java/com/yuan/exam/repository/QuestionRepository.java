@@ -13,5 +13,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     /**
      * 依考试 ID 查询所有题目
      */
-    List<Question> findByExamId(Long examId);
+    List<Question> findByExam_Id(Long examId);
 }
