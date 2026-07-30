@@ -33,6 +33,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    /** 暱稱（可空） */
+    private String nickname;
+
+    /** 電子郵件（可空） */
+    private String email;
+
     /** 建立時間 */
     @CreationTimestamp
     private LocalDateTime createTime;
