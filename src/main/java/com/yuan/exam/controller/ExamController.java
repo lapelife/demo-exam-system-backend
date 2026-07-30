@@ -1,7 +1,10 @@
 package com.yuan.exam.controller;
 
 import com.yuan.exam.common.Result;
+import com.yuan.exam.dto.AssemblePaperDto;
 import com.yuan.exam.dto.ExamVo;
+import com.yuan.exam.dto.QuestionVo;
+import com.yuan.exam.service.BankQuestionService;
 import com.yuan.exam.service.ExamService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,17 +20,17 @@ import java.util.List;
 
 /**
  * 考试管理接口
- * - GET 列表/详情：所有登录者皆可（学生用于查看可参加考试）
- * - POST/PUT/DELETE：限 ADMIN/TEACHER
  */
 @RestController
 @RequestMapping("/api/exams")
 public class ExamController {
 
     private final ExamService examService;
+    private final BankQuestionService bankQuestionService;
 
-    public ExamController(ExamService examService) {
+    public ExamController(ExamService examService, BankQuestionService bankQuestionService) {
         this.examService = examService;
+        this.bankQuestionService = bankQuestionService;
     }
 
     @GetMapping
@@ -56,5 +59,19 @@ public class ExamController {
     @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public Result<Void> delete(@PathVariable Long id) {
         return examService.delete(id);
+    }
+
+    /** 教师预览试卷（含答案，不计分） */
+    @GetMapping("/{id}/preview")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
+    public Result<List<QuestionVo>> preview(@PathVariable Long id) {
+        return examService.preview(id);
+    }
+
+    /** 从题库组卷：复制题目到本场考试 */
+    @PostMapping("/{id}/assemble")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
+    public Result<List<QuestionVo>> assemble(@PathVariable Long id, @RequestBody AssemblePaperDto dto) {
+        return bankQuestionService.assemble(id, dto);
     }
 }

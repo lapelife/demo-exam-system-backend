@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 学生作答接口：开始作答、提交并自动判分（仅 STUDENT）
+ * 学生作答接口（仅 STUDENT）
  */
 @RestController
 @RequestMapping("/api/take")
@@ -27,17 +27,16 @@ public class ExamTakingController {
         this.examTakingService = examTakingService;
     }
 
-    /**
-     * 开始作答：建立作答记录并返回题目（不含答案）
-     */
     @PostMapping("/start/{examId}")
     public Result<StartExamVo> start(@PathVariable Long examId) {
         return examTakingService.startExam(examId);
     }
 
-    /**
-     * 提交作答并自动判分
-     */
+    @PostMapping("/draft")
+    public Result<Void> draft(@Valid @RequestBody SubmitAnswerDto dto) {
+        return examTakingService.saveDraft(dto);
+    }
+
     @PostMapping("/submit")
     public Result<ScoreVo> submit(@Valid @RequestBody SubmitAnswerDto dto) {
         return examTakingService.submitExam(dto);

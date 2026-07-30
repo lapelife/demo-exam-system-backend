@@ -7,13 +7,14 @@ spring:
 
   # 数据源配置（可用环境变量 DB_USERNAME / DB_PASSWORD 覆盖）
   datasource:
-    url: jdbc:mysql://localhost:3306/exam_system?useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/exam_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:123456}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # JPA 配置
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -25,3 +26,10 @@ spring:
 jwt:
   secret: ${JWT_SECRET:yuan-exam-system-secret-key-2026-very-long-xxxxxxxxxxxxxx}
   expiration: 86400000  # 24 小时（毫秒）
+
+# SpringDoc
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

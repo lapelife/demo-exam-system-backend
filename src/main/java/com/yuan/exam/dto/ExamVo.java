@@ -15,4 +15,10 @@ public class ExamVo {
     private Integer totalScore;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    /** NOT_STARTED / OPEN / CLOSED（相对当前时间） */
+    private String windowStatus;
+    /** 当前用户是否已完成该考试（学生视角） */
+    private Boolean finished;
+    /** 当前用户是否有进行中记录 */
+    private Boolean inProgress;
 }

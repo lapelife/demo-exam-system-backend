@@ -7,13 +7,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 
 /**
- * 单题作答记录实体（每题一笔，含判分结果）
+ * 单题作答记录实体（每题一笔，含判分结果；进行中可为草稿）
  */
 @Data
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"exam_record_id", "question_id"}))
 public class AnswerRecord {
 
     /** 主键 ID */
@@ -34,9 +37,9 @@ public class AnswerRecord {
     /** 学生作答内容（单选/判断为单值；多选为逗号分隔） */
     private String answer;
 
-    /** 是否答对 */
+    /** 是否答对（草稿阶段可为 null） */
     private Boolean isCorrect;
 
-    /** 本题得分 */
+    /** 本题得分（草稿阶段可为 null） */
     private Integer score;
 }

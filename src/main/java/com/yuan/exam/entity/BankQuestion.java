@@ -1,6 +1,5 @@
 package com.yuan.exam.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,35 +12,31 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 /**
- * 用户实体
+ * 题库题目（独立于考试，可组卷复制到 Exam）
  */
 @Data
 @Entity
-public class User {
+public class BankQuestion {
 
-    /** 主键 ID */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 用户名称（唯一） */
-    @Column(nullable = false, unique = true)
-    private String username;
-
-    /** 密码 */
-    private String password;
-
-    /** 角色 */
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private QuestionType type;
 
-    /** 暱称（可空） */
-    private String nickname;
+    private String content;
 
-    /** 电子邮件（可空） */
-    private String email;
+    /** 选项 JSON 字符串 */
+    private String options;
 
-    /** 建立时间 */
+    private String answer;
+
+    private Integer score;
+
+    /** 可选标签，便于筛选 */
+    private String tag;
+
     @CreationTimestamp
     private LocalDateTime createTime;
 }

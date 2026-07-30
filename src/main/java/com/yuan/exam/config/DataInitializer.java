@@ -1,10 +1,12 @@
 package com.yuan.exam.config;
 
+import com.yuan.exam.entity.BankQuestion;
 import com.yuan.exam.entity.Exam;
 import com.yuan.exam.entity.Question;
 import com.yuan.exam.entity.QuestionType;
 import com.yuan.exam.entity.Role;
 import com.yuan.exam.entity.User;
+import com.yuan.exam.repository.BankQuestionRepository;
 import com.yuan.exam.repository.ExamRepository;
 import com.yuan.exam.repository.QuestionRepository;
 import com.yuan.exam.repository.UserRepository;
@@ -29,15 +31,18 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ExamRepository examRepository;
     private final QuestionRepository questionRepository;
+    private final BankQuestionRepository bankQuestionRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(UserRepository userRepository,
                             ExamRepository examRepository,
                             QuestionRepository questionRepository,
+                            BankQuestionRepository bankQuestionRepository,
                             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
+        this.bankQuestionRepository = bankQuestionRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -46,6 +51,7 @@ public class DataInitializer implements CommandLineRunner {
         initUsers();
         upgradePlaintextDemoPasswords();
         initSampleExam();
+        initBankQuestions();
     }
 
     /**
@@ -135,6 +141,26 @@ public class DataInitializer implements CommandLineRunner {
         log.info("已初始化示范考试「Java 基础测验」与 6 题题目");
     }
 
+    private void initBankQuestions() {
+        if (bankQuestionRepository.count() > 0) {
+            log.info("题库已有数据，跳过初始化");
+            return;
+        }
+        bankQuestionRepository.save(buildBank(QuestionType.SINGLE,
+                "HTTP 默认端口是？",
+                "[{\"key\":\"A\",\"text\":\"21\"},{\"key\":\"B\",\"text\":\"80\"},{\"key\":\"C\",\"text\":\"443\"},{\"key\":\"D\",\"text\":\"22\"}]",
+                "B", 10, "网络"));
+        bankQuestionRepository.save(buildBank(QuestionType.JUDGE,
+                "REST 接口通常使用 JSON 作为数据交换格式。",
+                "[{\"key\":\"A\",\"text\":\"正确\"},{\"key\":\"B\",\"text\":\"错误\"}]",
+                "A", 10, "网络"));
+        bankQuestionRepository.save(buildBank(QuestionType.MULTI,
+                "下列哪些是关系型数据库？（多选）",
+                "[{\"key\":\"A\",\"text\":\"MySQL\"},{\"key\":\"B\",\"text\":\"PostgreSQL\"},{\"key\":\"C\",\"text\":\"Redis\"},{\"key\":\"D\",\"text\":\"MongoDB\"}]",
+                "A,B", 15, "数据库"));
+        log.info("已初始化题库示范题目 3 道");
+    }
+
     private User buildUser(String username, String rawPassword, Role role, String nickname) {
         User user = new User();
         user.setUsername(username);
@@ -153,6 +179,18 @@ public class DataInitializer implements CommandLineRunner {
         q.setOptions(options);
         q.setAnswer(answer);
         q.setScore(score);
+        return q;
+    }
+
+    private BankQuestion buildBank(QuestionType type, String content, String options,
+                                   String answer, Integer score, String tag) {
+        BankQuestion q = new BankQuestion();
+        q.setType(type);
+        q.setContent(content);
+        q.setOptions(options);
+        q.setAnswer(answer);
+        q.setScore(score);
+        q.setTag(tag);
         return q;
     }
 }

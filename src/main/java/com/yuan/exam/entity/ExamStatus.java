@@ -6,8 +6,8 @@ package com.yuan.exam.entity;
 public enum ExamStatus {
     /** 进行中（已开始尚未提交） */
     IN_PROGRESS,
-    /** 已提交（待判分或已判分） */
-    SUBMITTED,
-    /** 已判分完成 */
-    GRADED
+    /** 已判分完成（主动提交） */
+    GRADED,
+    /** 超时自动交卷并判分 */
+    TIMEOUT_AUTO_GRADED
 }
