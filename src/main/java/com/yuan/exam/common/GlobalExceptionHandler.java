@@ -2,6 +2,8 @@ package com.yuan.exam.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,5 +51,25 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("; "));
         log.warn("參數校驗失敗：{}", message);
         return Result.error(400, "參數校驗失敗：" + message);
+    }
+
+    /**
+     * 處理 @PreAuthorize 角色不足（Spring Security 6 丟出 AuthorizationDeniedException）
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Result<Void> handleAuthorizationDenied(AuthorizationDeniedException e) {
+        log.warn("權限不足：{}", e.getMessage());
+        return Result.error(403, "權限不足");
+    }
+
+    /**
+     * 處理一般存取被拒
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Result<Void> handleAccessDenied(AccessDeniedException e) {
+        log.warn("存取被拒：{}", e.getMessage());
+        return Result.error(403, "權限不足");
     }
 }

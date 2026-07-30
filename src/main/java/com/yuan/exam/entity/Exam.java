@@ -27,6 +27,9 @@ public class Exam {
     /** 考試時長（分鐘） */
     private Integer duration;
 
+    /** 考試總分 */
+    private Integer totalScore;
+
     /** 開始時間 */
     private LocalDateTime startTime;
 
