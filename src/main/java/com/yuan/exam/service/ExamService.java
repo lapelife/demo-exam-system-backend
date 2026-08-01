@@ -1,5 +1,7 @@
 package com.yuan.exam.service;
 
+import com.yuan.exam.common.PageRequests;
+import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
 import com.yuan.exam.common.SecurityUtils;
 import com.yuan.exam.dto.ExamVo;
@@ -15,6 +17,9 @@ import com.yuan.exam.repository.ExamRepository;
 import com.yuan.exam.repository.QuestionRepository;
 import com.yuan.exam.repository.QuestionSnapshotRepository;
 import com.yuan.exam.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,12 +55,15 @@ public class ExamService {
     }
 
     @Transactional(readOnly = true)
-    public Result<List<ExamVo>> list() {
+    public Result<PageResult<ExamVo>> list(Integer page, Integer size) {
         User user = currentUser();
-        List<ExamVo> list = examRepository.findAll().stream()
+        Pageable pageable = PageRequests.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Exam> examPage = examRepository.findAll(pageable);
+        List<ExamVo> list = examPage.getContent().stream()
                 .map(e -> toVo(e, user))
                 .toList();
-        return Result.success(list);
+        return Result.success(PageResult.of(list, examPage.getTotalElements(),
+                pageable.getPageNumber() + 1, pageable.getPageSize()));
     }
 
     @Transactional(readOnly = true)

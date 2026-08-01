@@ -37,7 +37,7 @@ class ExamFlowIntegrationTest {
                 .andExpect(jsonPath("$.code").value(200))
                 .andReturn();
 
-        JsonNode examList = objectMapper.readTree(exams.getResponse().getContentAsString()).path("data");
+        JsonNode examList = objectMapper.readTree(exams.getResponse().getContentAsString()).path("data").path("list");
         assertThat(examList.isArray()).isTrue();
         assertThat(examList.size()).isGreaterThan(0);
         long examId = examList.get(0).path("id").asLong();

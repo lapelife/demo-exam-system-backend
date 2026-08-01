@@ -1,5 +1,7 @@
 package com.yuan.exam.service;
 
+import com.yuan.exam.common.PageRequests;
+import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
 import com.yuan.exam.common.SecurityUtils;
 import com.yuan.exam.dto.ResetPasswordRequest;
@@ -9,11 +11,13 @@ import com.yuan.exam.dto.UserVo;
 import com.yuan.exam.entity.Role;
 import com.yuan.exam.entity.User;
 import com.yuan.exam.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -31,19 +35,24 @@ public class UserManageService {
     }
 
     @Transactional(readOnly = true)
-    public Result<List<UserVo>> list(Role role, String username) {
-        List<User> users;
+    public Result<PageResult<UserVo>> list(Role role, String username, Integer page, Integer size) {
+        Pageable pageable = PageRequests.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
         boolean hasName = username != null && !username.isBlank();
+        Page<User> userPage;
         if (role != null && hasName) {
-            users = userRepository.findByRoleAndUsernameContainingIgnoreCaseOrderByIdAsc(role, username.trim());
+            userPage = userRepository.findByRoleAndUsernameContainingIgnoreCase(role, username.trim(), pageable);
         } else if (role != null) {
-            users = userRepository.findByRoleOrderByIdAsc(role);
+            userPage = userRepository.findByRole(role, pageable);
         } else if (hasName) {
-            users = userRepository.findByUsernameContainingIgnoreCaseOrderByIdAsc(username.trim());
+            userPage = userRepository.findByUsernameContainingIgnoreCase(username.trim(), pageable);
         } else {
-            users = userRepository.findAll();
+            userPage = userRepository.findAll(pageable);
         }
-        return Result.success(users.stream().map(this::toVo).toList());
+        return Result.success(PageResult.of(
+                userPage.getContent().stream().map(this::toVo).toList(),
+                userPage.getTotalElements(),
+                pageable.getPageNumber() + 1,
+                pageable.getPageSize()));
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.yuan.exam.controller;
 
+import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
 import com.yuan.exam.dto.ExamRecordVo;
 import com.yuan.exam.dto.ExamStatsVo;
@@ -9,9 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 成绩查询接口（具体路径写在变量路径之前）
@@ -27,8 +27,10 @@ public class ScoreController {
     }
 
     @GetMapping
-    public Result<List<ExamRecordVo>> myScores() {
-        return scoreService.myScores();
+    public Result<PageResult<ExamRecordVo>> myScores(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return scoreService.myScores(page, size);
     }
 
     @GetMapping("/exam/{examId}/stats")
@@ -39,8 +41,11 @@ public class ScoreController {
 
     @GetMapping("/exam/{examId}")
     @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
-    public Result<List<ExamRecordVo>> examScores(@PathVariable Long examId) {
-        return scoreService.examScores(examId);
+    public Result<PageResult<ExamRecordVo>> examScores(
+            @PathVariable Long examId,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return scoreService.examScores(examId, page, size);
     }
 
     @GetMapping("/{examRecordId}")

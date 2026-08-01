@@ -1,5 +1,7 @@
-# Docker Compose：MySQL + 后端
-# 前端本地：cd frontend && npm run dev（代理到 :8080）
+# Docker Compose：MySQL + 考试后端 +（可选）AI 出题服务
+# 在本文件所在目录执行：docker compose up -d --build
+# 前端本地：cd ../demo-exam-system-frontend && npm run dev
+#   /api → :8080，/ai-api → :8081
 
 services:
   mysql:
@@ -21,7 +23,7 @@ services:
 
   backend:
     build:
-      context: ./demo-exam-system-backend
+      context: .
       dockerfile: Dockerfile
     container_name: exam-backend
     ports:
@@ -35,5 +37,24 @@ services:
       mysql:
         condition: service_healthy
 
+  # 独立 AI 出题服务（可不启动；考试系统本身不依赖它）
+  ai-service:
+    build:
+      context: ../demo-exam-ai-service
+      dockerfile: Dockerfile
+    container_name: exam-ai-service
+    ports:
+      - "8081:8081"
+    environment:
+      ZHIPU_API_KEY: ${ZHIPU_API_KEY:-}
+      AI_BASE_URL: ${AI_BASE_URL:-https://open.bigmodel.cn/api/paas/v4}
+      AI_MODEL: ${AI_MODEL:-glm-4-flash}
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-}
+      AI_DATA_DIR: /app/data
+    volumes:
+      # 文章库 H2 数据持久化（与 AI_DATA_DIR 一致）
+      - exam_ai_data:/app/data
+
 volumes:
   exam_mysql_data:
+  exam_ai_data:

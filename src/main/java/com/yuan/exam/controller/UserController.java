@@ -1,5 +1,6 @@
 package com.yuan.exam.controller;
 
+import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
 import com.yuan.exam.dto.ResetPasswordRequest;
 import com.yuan.exam.dto.UserCreateRequest;
@@ -19,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 /**
  * 用户管理（仅 ADMIN）
  */
@@ -36,10 +35,12 @@ public class UserController {
     }
 
     @GetMapping
-    public Result<List<UserVo>> list(
+    public Result<PageResult<UserVo>> list(
             @RequestParam(required = false) Role role,
-            @RequestParam(required = false) String username) {
-        return userManageService.list(role, username);
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return userManageService.list(role, username, page, size);
     }
 
     @PostMapping

@@ -1,5 +1,7 @@
 package com.yuan.exam.service;
 
+import com.yuan.exam.common.PageRequests;
+import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
 import com.yuan.exam.common.SecurityUtils;
 import com.yuan.exam.dto.AnswerDetailVo;
@@ -18,6 +20,8 @@ import com.yuan.exam.repository.ExamRecordRepository;
 import com.yuan.exam.repository.ExamRepository;
 import com.yuan.exam.repository.QuestionSnapshotRepository;
 import com.yuan.exam.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,27 +55,32 @@ public class ScoreService {
     }
 
     @Transactional(readOnly = true)
-    public Result<List<ExamRecordVo>> myScores() {
+    public Result<PageResult<ExamRecordVo>> myScores(Integer page, Integer size) {
         User user = currentUser();
         if (user == null) {
             return Result.error(401, "未登录");
         }
-        List<ExamRecord> records = examRecordRepository.findByUser_IdOrderByStartTimeDesc(user.getId());
-        List<ExamRecordVo> list = records.stream()
+        Pageable pageable = PageRequests.of(page, size);
+        Page<ExamRecord> recordPage = examRecordRepository.findByUser_IdOrderByStartTimeDesc(user.getId(), pageable);
+        List<ExamRecordVo> list = recordPage.getContent().stream()
                 .map(r -> toVo(r, r.getExam().getName(), user.getUsername()))
                 .toList();
-        return Result.success(list);
+        return Result.success(PageResult.of(list, recordPage.getTotalElements(),
+                pageable.getPageNumber() + 1, pageable.getPageSize()));
     }
 
     @Transactional(readOnly = true)
-    public Result<List<ExamRecordVo>> examScores(Long examId) {
+    public Result<PageResult<ExamRecordVo>> examScores(Long examId, Integer page, Integer size) {
         if (!examRepository.existsById(examId)) {
             return Result.error(404, "考试不存在");
         }
-        List<ExamRecordVo> list = examRecordRepository.findByExam_IdOrderByStartTimeDesc(examId).stream()
+        Pageable pageable = PageRequests.of(page, size);
+        Page<ExamRecord> recordPage = examRecordRepository.findByExam_IdOrderByStartTimeDesc(examId, pageable);
+        List<ExamRecordVo> list = recordPage.getContent().stream()
                 .map(r -> toVo(r, r.getExam().getName(), r.getUser().getUsername()))
                 .toList();
-        return Result.success(list);
+        return Result.success(PageResult.of(list, recordPage.getTotalElements(),
+                pageable.getPageNumber() + 1, pageable.getPageSize()));
     }
 
     @Transactional(readOnly = true)

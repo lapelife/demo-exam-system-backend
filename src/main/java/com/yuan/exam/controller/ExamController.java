@@ -1,5 +1,6 @@
 package com.yuan.exam.controller;
 
+import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
 import com.yuan.exam.dto.AssemblePaperDto;
 import com.yuan.exam.dto.ExamVo;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -34,8 +36,10 @@ public class ExamController {
     }
 
     @GetMapping
-    public Result<List<ExamVo>> list() {
-        return examService.list();
+    public Result<PageResult<ExamVo>> list(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return examService.list(page, size);
     }
 
     @GetMapping("/{id}")

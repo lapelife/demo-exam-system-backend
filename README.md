@@ -18,6 +18,7 @@
 - 开考题目快照锁题；判分按快照；未答计 0；满分=题目分之和
 - 题目列表按角色投影（学生看不到答案）
 - 教师：全员成绩、统计、试卷预览
+- **AI 出题（独立服务）**：文章/PDF 生成题目由同级 [`demo-exam-ai-service`](../demo-exam-ai-service) 提供，考试后端不内嵌模型调用；前端生成后写入题库
 
 ## 角色权限（固定，不做动态权限矩阵）
 | 能力 | ADMIN | TEACHER | STUDENT |
@@ -48,11 +49,23 @@ Swagger：`http://localhost:8080/swagger-ui.html`
 2. 可选环境变量：`DB_USERNAME` / `DB_PASSWORD` / `JWT_SECRET`
 3. `mvn spring-boot:run`
 
-### Docker Compose（仓库根目录）
+### Docker Compose（在本目录执行）
 ```bash
+cd demo-exam-system-backend
 docker compose up -d --build
 ```
-后端：`http://localhost:8080`，MySQL：`3306`
+后端：`http://localhost:8080`，MySQL：`3306`，可选 AI 出题：`http://localhost:8081`
+
+仅启动考试后端（不含 AI）：
+```bash
+docker compose up -d --build mysql backend
+```
+
+AI 出题服务可单独部署，详见同级目录 [`demo-exam-ai-service/README.md`](../demo-exam-ai-service/README.md)。配置智谱密钥示例：
+```bash
+set ZHIPU_API_KEY=你的密钥
+docker compose up -d --build ai-service
+```
 
 ## 测试账号
 | 账号 | 密码 | 角色 |

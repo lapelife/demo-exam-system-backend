@@ -1,5 +1,7 @@
 package com.yuan.exam.service;
 
+import com.yuan.exam.common.PageRequests;
+import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
 import com.yuan.exam.dto.AssemblePaperDto;
 import com.yuan.exam.dto.BankQuestionVo;
@@ -10,6 +12,9 @@ import com.yuan.exam.entity.Question;
 import com.yuan.exam.repository.BankQuestionRepository;
 import com.yuan.exam.repository.ExamRepository;
 import com.yuan.exam.repository.QuestionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,11 +44,16 @@ public class BankQuestionService {
     }
 
     @Transactional(readOnly = true)
-    public Result<List<BankQuestionVo>> list(String tag) {
-        List<BankQuestion> list = (tag == null || tag.isBlank())
-                ? bankQuestionRepository.findAll()
-                : bankQuestionRepository.findByTag(tag);
-        return Result.success(list.stream().map(this::toVo).toList());
+    public Result<PageResult<BankQuestionVo>> list(String tag, Integer page, Integer size) {
+        Pageable pageable = PageRequests.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<BankQuestion> questionPage = (tag == null || tag.isBlank())
+                ? bankQuestionRepository.findAll(pageable)
+                : bankQuestionRepository.findByTag(tag.trim(), pageable);
+        return Result.success(PageResult.of(
+                questionPage.getContent().stream().map(this::toVo).toList(),
+                questionPage.getTotalElements(),
+                pageable.getPageNumber() + 1,
+                pageable.getPageSize()));
     }
 
     @Transactional

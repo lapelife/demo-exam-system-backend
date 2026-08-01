@@ -1,5 +1,6 @@
 package com.yuan.exam.controller;
 
+import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
 import com.yuan.exam.dto.BankQuestionVo;
 import com.yuan.exam.service.BankQuestionService;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 题库管理（ADMIN/TEACHER）
@@ -31,8 +30,11 @@ public class BankQuestionController {
     }
 
     @GetMapping
-    public Result<List<BankQuestionVo>> list(@RequestParam(required = false) String tag) {
-        return bankQuestionService.list(tag);
+    public Result<PageResult<BankQuestionVo>> list(
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return bankQuestionService.list(tag, page, size);
     }
 
     @PostMapping
