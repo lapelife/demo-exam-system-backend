@@ -2,6 +2,14 @@ package com.yuan.exam.controller;
 
 import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
+import com.yuan.exam.dto.BankBatchCreateRequest;
+import com.yuan.exam.dto.BankBatchCreateResponse;
+import com.yuan.exam.dto.BankDedupApplyRequest;
+import com.yuan.exam.dto.BankDedupApplyResponse;
+import com.yuan.exam.dto.BankDedupScanRequest;
+import com.yuan.exam.dto.BankDedupScanResponse;
+import com.yuan.exam.dto.BankDuplicateCheckRequest;
+import com.yuan.exam.dto.BankDuplicateCheckResponse;
 import com.yuan.exam.dto.BankQuestionVo;
 import com.yuan.exam.service.BankQuestionService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,6 +48,30 @@ public class BankQuestionController {
     @PostMapping
     public Result<BankQuestionVo> create(@RequestBody BankQuestionVo vo) {
         return bankQuestionService.create(vo);
+    }
+
+    /** 检查题目是否与题库或批次内重复 */
+    @PostMapping("/check-duplicates")
+    public Result<BankDuplicateCheckResponse> checkDuplicates(@RequestBody BankDuplicateCheckRequest request) {
+        return bankQuestionService.checkDuplicates(request);
+    }
+
+    /** 批量入库，默认跳过重复题 */
+    @PostMapping("/batch")
+    public Result<BankBatchCreateResponse> batchCreate(@RequestBody BankBatchCreateRequest request) {
+        return bankQuestionService.batchCreate(request);
+    }
+
+    /** 扫描题库内高度相似题目分组 */
+    @PostMapping("/dedup/scan")
+    public Result<BankDedupScanResponse> scanDuplicates(@RequestBody(required = false) BankDedupScanRequest request) {
+        return bankQuestionService.scanDuplicates(request == null ? new BankDedupScanRequest() : request);
+    }
+
+    /** 按用户勾选结果删除未保留的重复题 */
+    @PostMapping("/dedup/apply")
+    public Result<BankDedupApplyResponse> applyDedup(@RequestBody BankDedupApplyRequest request) {
+        return bankQuestionService.applyDedup(request);
     }
 
     @PutMapping("/{id}")

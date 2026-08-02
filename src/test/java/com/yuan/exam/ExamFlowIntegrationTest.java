@@ -47,7 +47,7 @@ class ExamFlowIntegrationTest {
                         .header("Authorization", "Bearer " + studentToken))
                 .andExpect(status().isOk())
                 .andReturn();
-        JsonNode q0 = objectMapper.readTree(qs.getResponse().getContentAsString()).path("data").get(0);
+        JsonNode q0 = objectMapper.readTree(qs.getResponse().getContentAsString()).path("data").path("list").get(0);
         assertThat(q0.path("answer").isNull() || q0.path("answer").asText().isEmpty()).isTrue();
 
         String adminToken = login("admin", "123456");

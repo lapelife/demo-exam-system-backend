@@ -1,5 +1,6 @@
 package com.yuan.exam.controller;
 
+import com.yuan.exam.common.PageResult;
 import com.yuan.exam.common.Result;
 import com.yuan.exam.dto.QuestionVo;
 import com.yuan.exam.service.QuestionService;
@@ -11,9 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 题目管理接口（依考试 ID）
@@ -31,8 +31,11 @@ public class QuestionController {
     }
 
     @GetMapping
-    public Result<List<QuestionVo>> list(@PathVariable Long examId) {
-        return questionService.listByExam(examId);
+    public Result<PageResult<QuestionVo>> list(
+            @PathVariable Long examId,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return questionService.listByExam(examId, page, size);
     }
 
     @PostMapping
